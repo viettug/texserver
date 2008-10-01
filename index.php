@@ -7,7 +7,7 @@
 	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
 
 	define('USER', $_SERVER['REMOTE_ADDR']);
-	define('SUFFER', 6); /* minimum distance between two access */
+	define('SUFFER', 4); /* minimum distance between two access */
 
 	/********************************************************* system variables */
 
@@ -16,23 +16,17 @@
 
 	/* access time */
 	$access = time();
-	$last_access = (isset($_SESSION['access'])) ? $_SESSION['access'] : $access;
-	$last_access = intval($last_access);
-
 	$jobname = USER."-$access";
 	$jobdir = dirname(__FILE__) . "/tmp"; /* physical path */
 	$jobdir_web = "./tmp"; /* web path */
 	$texdir = dirname(__FILE__) . "/texfiles";
-
-	/* check for duplicate accessing */
-	$_SESSION['access'] = $access;
 
 	/* captcha variables */
 	/* captcha */
 
 	$captcha = array(
 		"tổng 1 + 4 = 5",
-		"phần lẻ của 100 / 100 = 0",
+		"phần nguyên của số Pi = 3",
 		"phần nguyên của 10 / 100 = 0",
 		"bất đẳng thức Cauchy áp dụng cho số = duong",
 		"phần ảo của số phức 1 + 3i = 3",
@@ -55,6 +49,25 @@
 
 	srand(make_seed());
 	$captcha_newid = rand(0, count($captcha) - 1);
+
+	/******************************************************************* suffer */
+
+	function suffer() {
+		global $access, $captcha_id;
+
+		$last_access = (isset($_SESSION['access'])) ? $_SESSION['access'] : 0;
+		$last_access = intval($last_access);
+		$captcha_id_last = isset($_SESSION['captcha_id_last']) ? $_SESSION['captcha_id_last'] : -1;
+		$ret = TRUE;
+
+		if ( ($access - $last_access < SUFFER) or ($captcha_id == $captcha_id_last) )
+			$ret = FALSE;
+
+		$_SESSION['access'] = $access;
+		$_SESSION['captcha_id_last'] = $captcha_id;
+
+		return $ret;
+	}
 
 	/****************************************************************** captcha */
 
@@ -118,8 +131,8 @@
 		global $tex_stream, $jobname, $jobdir, $jobdir_web;
 		global $access, $last_access;
 
-		if ($access - $last_access < SUFFER) {
-			$output = array('please patient');
+		if (!suffer()) {
+			$output = array('be patient');
 			$retval = 255;
 		}
 		elseif (!empty($tex_stream)) {

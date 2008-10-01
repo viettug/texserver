@@ -60,6 +60,8 @@
 			Use it for fun. <strong>Please don't hack</strong>.
 			<br>
 			Send your feedback to <strong>xkYanh</strong> at GmAil d0t c0m.
+			<br>
+			$Id$
 	</div>
 	<div class="clear__"></div>
 	<div id="rice">

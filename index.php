@@ -2,18 +2,30 @@
 
 	umask(022);
 
+	session_start();
+
 	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
 
 	define('USER', $_SERVER['REMOTE_ADDR']);
+	define('SUFFER', 6); /* minimum distance between two access */
 
 	/********************************************************* system variables */
 
 	$tex_stream = isset($_POST['tex_stream']) ? $_POST['tex_stream']: '';
 	$tex_stream = trim($tex_stream);
-	$jobname = USER . "-". time();
+
+	/* access time */
+	$access = time();
+	$last_access = (isset($_SESSION['access'])) ? $_SESSION['access'] : $access;
+	$last_access = intval($last_access);
+
+	$jobname = USER."-$access";
 	$jobdir = dirname(__FILE__) . "/tmp"; /* physical path */
 	$jobdir_web = "./tmp"; /* web path */
 	$texdir = dirname(__FILE__) . "/texfiles";
+
+	/* check for duplicate accessing */
+	$_SESSION['access'] = $access;
 
 	/* captcha variables */
 	/* captcha */
@@ -29,8 +41,7 @@
 		"số điện thoại công an cứu nạn = 113",
 		"thành phố Hồ Chí Minh có đài HTV7 và HTV = 9",
 		"số chẵn theo sau số 99 = 100",
-		"số lẻ theo sau số 99 = 101",
-		"trên bản đồ, nước Việt Nam có hình chữ = s"
+		"số lẻ theo sau số 99 = 101"
 	);
 
 	/************************************************ captcha details from user */
@@ -105,8 +116,13 @@
 
 	function typeset() {
 		global $tex_stream, $jobname, $jobdir, $jobdir_web;
+		global $access, $last_access;
 
-		if (!empty($tex_stream)) {
+		if ($access - $last_access < SUFFER) {
+			$output = array('please patient');
+			$retval = 255;
+		}
+		elseif (!empty($tex_stream)) {
 			if (captcha('check') != TRUE ) {
 				$output = array('<font color="red">please pass the firewall :)</font>');
 				$retval = 255;
@@ -169,6 +185,9 @@
 <head>
 	<title>TeX server</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="sh_main.min.js"></script>
+	<script type="text/javascript" src="sh_latex.js"></script>
+	<link type="text/css" rel="stylesheet" href="sh_style.css">
 	<style>
 		#tex_stream {
 			width: 500px;
@@ -176,6 +195,7 @@
 			display: block;
 			border: 1px inset #fff;
 			padding: 2px;
+			font-family: monospace;
 		}
 		#tex_stream:focus {
 			background-color: #f0f0f0;
@@ -266,7 +286,7 @@
 		}
 	</style>
 </head>
-<body>
+<body onload="sh_highlightDocument();">
 	<div id="svnid">$Id$</div>
 	<div id="warn">
 		This is a personal TeX server.
@@ -292,4 +312,8 @@
 		<?php print $typeset['output']; ?>
 	</div>
 	<div class="clear__"></div>
+	<div id="tex2">
+		Your fancy source:
+		<pre class="sh_latex"><?php print $tex_stream; ?></pre>
+	</div>
 </body>

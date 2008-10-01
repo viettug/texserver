@@ -1,4 +1,7 @@
 <?php
+
+	umask(022);
+
 	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
 
 	define('USER', $_SERVER['REMOTE_ADDR']);
@@ -8,8 +11,9 @@
 	$tex_stream = isset($_POST['tex_stream']) ? $_POST['tex_stream']: '';
 	$tex_stream = trim($tex_stream);
 	$jobname = USER . "-". time();
-	$jobdir = dirname(__FILE__) . "/tmp/";
-	$texdir = dirname(__FILE__) . "/texfiles/";
+	$jobdir = dirname(__FILE__) . "/tmp"; /* physical path */
+	$jobdir_web = "./tmp"; /* web path */
+	$texdir = dirname(__FILE__) . "/texfiles";
 
 	/* captcha variables */
 	/* captcha */
@@ -20,13 +24,13 @@
 		"phần nguyên của 10 / 100 = 0",
 		"bất đẳng thức Cauchy áp dụng cho số = duong",
 		"phần ảo của số phức 1 + 3i = 3",
-		"số điện thoại cứa hỏa = 113",
-		"số điện thoại cứu thương = 114",
+		"số điện thoại cứa hỏa = 114",
+		"số điện thoại cứu thương = 115",
+		"số điện thoại công an cứu nạn = 113",
 		"thành phố Hồ Chí Minh có đài HTV7 và HTV = 9",
 		"số chẵn theo sau số 99 = 100",
 		"số lẻ theo sau số 99 = 101",
-		"trên bản đồ, nước Việt Nam có hình chữ = a",
-		""
+		"trên bản đồ, nước Việt Nam có hình chữ = s"
 	);
 
 	/************************************************ captcha details from user */
@@ -55,6 +59,7 @@
 			$ret = explode('=', $ret);
 			$ret = $ret[0];
 			$ret = trim($ret);
+			// $ret = "$ret <font color=\"red\">???</font>";
 		}
 		elseif ($op == 'check') {
 			if ($captcha_id < count($captcha)) {
@@ -99,7 +104,7 @@
 	/*************************************************** typeset the tex_stream */
 
 	function typeset() {
-		global $tex_stream, $jobname, $jobdir;
+		global $tex_stream, $jobname, $jobdir, $jobdir_web;
 
 		if (!empty($tex_stream)) {
 			if (captcha('check') != TRUE ) {
@@ -108,8 +113,24 @@
 			}
 			else{
 				$texfile = make_tex_file();
+				$options = array(
+					"-no-shell-escape",
+					"--halt-on-error",
+					"--output-directory=$jobdir",
+					"--jobname=$jobname",
+					"--output-format=pdf"
+				);
 
-				exec("/usr/bin/latex -no-shell-escape--halt-on-error --output-directory=$jobdir --jobname=$jobname $texfile", $output, $retval);
+				$option = implode(" ", $options);
+				exec("/usr/bin/latex $option $texfile", $output, $retval);
+
+				if ($retval == 0) {
+					$out = array(
+						"Output: <a href=\"$jobdir_web/$jobname.pdf\">$jobname.pdf</a>",
+						"","");
+					$out += $output;
+					$output = $out;
+				}
 			}
 		}
 		else {
@@ -131,7 +152,10 @@
 		/* hide something for security reason */
 		$st = str_replace($jobdir, "<font color=\"blue\">JOBDIR/</font>", $st);
 		$st = str_replace($texdir, "<font color=\"blue\">JOBDIR/</font>", $st);
-		$st = str_replace('/usr/share/texmf-dist/', "<font color=\"blue\">TEXDIR/</font>", $st);
+		$st = str_replace('/usr/share/texmf', "<font color=\"blue\">TEXDIR/</font>", $st);
+
+		$st = preg_replace("/\/([^.\/]+\.sty)/", "/<font color=\"green\">\\1</font>", $st);
+
 		$st = preg_replace("/(Output written on .*)/", "<font color=\"green\">\\1</font>", $st);
 		$st = preg_replace("/(Transcript written on .*)/", "<font color=\"red\">\\1</font>", $st);
 		return $st;
@@ -228,12 +252,17 @@
 			width: 100%;
 			color: blue;
 			font-size: 90%;
-			text-align: right;
+			text-align: left;
 			text-style: italic;
 		}
 
 		#captcha input {
 			background-color: #ccc;
+			text-align: center;
+		}
+
+		.reset {
+			color: blue;
 		}
 	</style>
 </head>
@@ -255,8 +284,8 @@
 				<input name="captcha_answer" type="text">
 				<input name="captcha_id" value="<?php print captcha('id'); ?>" type="hidden">
 			</div>
-			<input type="reset" value="reset">
-			<input type="submit" value="typset">
+			<input type="submit" value="typeset" class="submit">
+			<input type="reset" value="reset" class="reset">
 		</form>
 	</div>
 	<div id="log">

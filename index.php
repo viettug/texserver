@@ -1,5 +1,5 @@
 <?php
-	error_reporting(E_ALL);
+	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
 
 	define('USER', $_SERVER['REMOTE_ADDR']);
 

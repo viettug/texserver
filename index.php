@@ -352,7 +352,7 @@
 				<input name="captcha_id" value="<?php print captcha('id'); ?>" type="hidden">
 			</div>
 			<input type="submit" value="typeset" class="submit">
-			<input type="reset" value="reset" class="reset" onsubmit="javascript:document.getElementById('tex_stream').value = '';">
+			<input type="reset" value="reset" class="reset">
 		</form>
 	</div>
 	<div id="log">

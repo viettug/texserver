@@ -19,12 +19,12 @@
  * - apache web server (lighttpd is possible with some hacks. see .htaccess)
  * - php support
  * - a directory contains
- *		- ./tmp/ : directory for output and log files. Permission: 777
- *		- ./texfiles/ : directory for user tex files. Permission: 777
+ *	- ./tmp/ : directory for output and log files. Permission: 777
+ *	- ./texfiles/ : directory for user tex files. Permission: 777
  * - advance users:
- *		- custom latex options
- *		- add some captcha questions (english only :P)
- *		- rewrite this script. you are welcome :P
+ *	- custom latex options
+ *	- add some captcha questions (english only :P)
+ *	- rewrite this script. you are welcome :P
  *
  * Note:
  * - use this program at your risk. I provide no-warranty. I have no duties
@@ -44,7 +44,7 @@
 	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
 
 	define('USER', $_SERVER['REMOTE_ADDR']);
-	define('SUFFER', 4); /* minimum distance between two access */
+	define('SUFFER', 4); /* minimum distance between two accesses */
 
 	/********************************************************* system variables */
 

@@ -27,7 +27,7 @@
  *		- rewrite this script. you are welcome :P
  *
  * Note:
- * - use this program at your risk. I provides no-warranty. I has no duties
+ * - use this program at your risk. I provide no-warranty. I have no duties
  * - incase this script harms your system. Again, USE AT YOUR RISK!
  *
  * Story:

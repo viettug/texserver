@@ -11,8 +11,35 @@
 
 	/********************************************************* system variables */
 
+	$tex_stream_default =
+'\documentclass[12pt,a4paper,oneside]{article}
+
+\usepackage{
+  geometry,
+  amsmath,
+  ntheorem
+}
+
+% \usepackage[utf8x]{vietnam}
+
+\geometry{a4paper,pdftex,left=3cm,right=4cm}
+
+\theoremstyle{plain}
+\theoremheaderfont{\bfseries}
+\theorembodyfont{\itshape}
+\theoremseparator{.}
+\newtheorem{mytheo}{My theorem}
+
+\begin{document}
+
+% you must type something here...
+
+\end{document}
+';
+
 	$tex_stream = isset($_POST['tex_stream']) ? $_POST['tex_stream']: '';
 	$tex_stream = trim($tex_stream);
+	$tex_stream_default = trim($tex_stream_default);
 
 	/* access time */
 	$access = time();
@@ -35,6 +62,12 @@
 		"số điện thoại công an cứu nạn = 113",
 		"thành phố Hồ Chí Minh có đài HTV7 và HTV = 9",
 		"số chẵn theo sau số 99 = 100",
+		"trên bản đồ, nước Việt Nam có hình chữ = S",
+		"dịch qua tiếng Anh từ 'bão tố' = storm",
+		"dịch qua tiếng Anh từ 'gà con' = chicken",
+		"dịch qua tiếng Anh từ 'tình yêu' = love",
+		"ngày giải phóng miền Nam là 30/4/ = 1975",
+		"số tự nhiên có một chữ số lớn nhất là = 9",
 		"số lẻ theo sau số 99 = 101"
 	);
 
@@ -89,7 +122,7 @@
 			if ($captcha_id < count($captcha)) {
 				$ret = $captcha[$captcha_id];
 				$ret = explode('=', $ret);
-				$ret = $ret[1];
+				$ret = trim($ret[1]);
 				$ret = ($captcha_answer == $ret);
 			}
 			else {
@@ -128,14 +161,18 @@
 	/*************************************************** typeset the tex_stream */
 
 	function typeset() {
-		global $tex_stream, $jobname, $jobdir, $jobdir_web;
+		global $tex_stream, $jobname, $jobdir, $jobdir_web, $tex_stream_default;
 		global $access, $last_access;
 
 		if (!suffer()) {
 			$output = array('be patient');
 			$retval = 255;
 		}
-		elseif (!empty($tex_stream)) {
+		elseif (empty($tex_stream)) {
+			$output = array('please specify the tex stream');
+			$retval = 255;
+		}
+		else {
 			if (captcha('check') != TRUE ) {
 				$output = array('<font color="red">please pass the firewall :)</font>');
 				$retval = 255;
@@ -162,10 +199,6 @@
 				}
 			}
 		}
-		else {
-			$output = array('please specify the tex stream');
-			$retval = 255;
-		}
 
 		$output = implode("<br>\n", $output);
 		$output = hilight_log($output);
@@ -182,6 +215,7 @@
 		$st = str_replace($jobdir, "<font color=\"blue\">JOBDIR/</font>", $st);
 		$st = str_replace($texdir, "<font color=\"blue\">JOBDIR/</font>", $st);
 		$st = str_replace('/usr/share/texmf', "<font color=\"blue\">TEXDIR/</font>", $st);
+		$st = str_replace('/home/users/kyanh', "<font color=\"blue\">TEXDIR/</font>", $st);
 
 		$st = preg_replace("/\/([^.\/]+\.sty)/", "/<font color=\"green\">\\1</font>", $st);
 
@@ -286,7 +320,7 @@
 			color: blue;
 			font-size: 90%;
 			text-align: left;
-			text-style: italic;
+			font-style: italic;
 		}
 
 		#captcha input {
@@ -318,7 +352,7 @@
 				<input name="captcha_id" value="<?php print captcha('id'); ?>" type="hidden">
 			</div>
 			<input type="submit" value="typeset" class="submit">
-			<input type="reset" value="reset" class="reset">
+			<input type="reset" value="reset" class="reset" onsubmit="javascript:document.getElementById('tex_stream').value = '';">
 		</form>
 	</div>
 	<div id="log">
@@ -327,6 +361,6 @@
 	<div class="clear__"></div>
 	<div id="tex2">
 		Your fancy source:
-		<pre class="sh_latex"><?php print $tex_stream; ?></pre>
+		<pre class="sh_latex"><?php echo empty($tex_stream) ? $tex_stream_default : $tex_stream; ?></pre>
 	</div>
 </body>

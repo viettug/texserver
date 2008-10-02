@@ -1,4 +1,41 @@
 <?php
+/**
+ * $Id$
+ *
+ * This small php script generates a Web interface to tex server.
+ *
+ * Author: kyanh <xkyanh@gmail.com>
+ * License: GPL
+ *
+ * Features:
+ * - generate pdf output from tex file. pdf link is downloadable.
+ * - light spam protection
+ *
+ * Demo:
+ * - http://kyanh.zapto.org:1006 (server maybe in downtime)
+ *
+ * Requirement and Installation:
+ * - tex system (executable by the world)
+ * - apache web server (lighttpd is possible with some hacks. see .htaccess)
+ * - php support
+ * - a directory contains
+ *		- ./tmp/ : directory for output and log files. Permission: 777
+ *		- ./texfiles/ : directory for user tex files. Permission: 777
+ * - advance users:
+ *		- custom latex options
+ *		- add some captcha questions (english only :P)
+ *		- rewrite this script. you are welcome :P
+ *
+ * Note:
+ * - use this program at your risk. I provides no-warranty. I has no duties
+ * - incase this script harms your system. Again, USE AT YOUR RISK!
+ *
+ * Story:
+ * - Similar interface was written in 2007 and published. Now I cannot find
+ * - where it is. It may be destroyed when I am moving files from PC to PC.
+ * - I wrote this script last night (Oct 1st, 2008). During my coding there were
+ * - some eletric cuts. Now it goes well. Thanks to God :P
+ */
 
 	umask(022);
 

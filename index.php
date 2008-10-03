@@ -401,3 +401,5 @@
 		<pre class="sh_latex"><?php echo empty($tex_stream) ? $tex_stream_default : $tex_stream; ?></pre>
 	</div>
 </body>
+</html>
+

@@ -218,10 +218,10 @@
 				$texfile = make_tex_file();
 				$options = array(
 					"-no-shell-escape",
-					"--halt-on-error",
-					"--output-directory=$jobdir",
-					"--jobname=$jobname",
-					"--output-format=pdf"
+					"-halt-on-error",
+					"-output-directory=$jobdir",
+					"-jobname=$jobname",
+					"-output-format=pdf"
 				);
 
 				$option = implode(" ", $options);
@@ -269,120 +269,18 @@
 <head>
 	<title>TeX server</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script type="text/javascript" src="sh_main.min.js"></script>
-	<script type="text/javascript" src="sh_latex.js"></script>
-	<link type="text/css" rel="stylesheet" href="sh_style.css">
-	<style>
-		#tex_stream {
-			width: 500px;
-			height: 300px;
-			display: block;
-			border: 1px inset #fff;
-			padding: 2px;
-			font-family: monospace;
-		}
-		#tex_stream:focus {
-			background-color: #f0f0f0;
-		}
-		#tex_stream:hover {
-			background-color: #f3f3f3;
-			color: #000;
-		}
-
-		input {
-			display: inline;
-			width: 100px;
-		}
-		input:hover {
-			background-color: #66cc99;
-		}
-
-		#warn {
-			width: 494px;
-			border: 1px inset #fff;
-			margin-bottom: 5px;
-			padding: 2px;
-			text-align: right;
-			color: navy;
-			background-color: #f0f0f0;
-			font-size: 90%;
-		}
-
-		#warn strong {
-			color: blue;
-		}
-
-		#warn:hover {
-			color: #fff;
-			background: #000;
-		}
-
-		#warn:hover strong {
-			color: yellow;
-		}
-
-		#svnid {
-			font-size: 90%;
-			width: 500px;
-			text-align: right;
-			font-style: italic;
-		}
-
-		.clear__ {
-			clear: both;
-		}
-
-		#rice {
-			width: 500px;
-			float: left;
-			margin-right: 2px;
-		}
-
-		#log {
-			width: 290px;
-			height: 400px;
-			float: left;
-			border: 1px inset #fff;
-			color: black;
-			background-color: #f0f0f0;
-			padding: 2px;
-			font-size: 85%;
-			font-family: monospace;
-			overflow: scroll;
-			white-space: nowrap;
-		}
-
-		#captcha {
-			width: 100%;
-			color: blue;
-			font-size: 90%;
-			text-align: left;
-			font-style: italic;
-		}
-
-		#captcha input {
-			background-color: #ccc;
-			text-align: center;
-		}
-
-		.reset {
-			color: blue;
-		}
-	</style>
+	<link type="text/css" rel="stylesheet" href="style.css">
 </head>
-<body onload="sh_highlightDocument();">
-	<div id="svnid">$Id$</div>
+<body>
 	<div id="warn">
 		This is a personal TeX server.
-		This is a demo/test server.<br>
 		Use it for fun. <strong>Please don't hack</strong>.
-		<br>
-		Send your feedback to <strong>xkYanh</strong> at GmAil d0t c0m.
 	</div>
 	<div class="clear__"></div>
 	<div id="rice">
 		<form method="post" action="index.php" id="form_tex_stream">
-			<textarea id="tex_stream" name="tex_stream"><?php	echo $tex_stream; ?></textarea>
+			<textarea id="tex_stream" name="tex_stream" class="codepress latex linenumbers-on"><?php echo $tex_stream; ?></textarea>
+			<script src="codepress/codepress.js" type="text/javascript"></script>
 			<div id="captcha">
 				<span class="captcha_text"><?php print captcha('text'); ?></span>
 				<input name="captcha_answer" type="text">
@@ -395,11 +293,5 @@
 	<div id="log">
 		<?php print $typeset['output']; ?>
 	</div>
-	<div class="clear__"></div>
-	<div id="tex2">
-		Your fancy source:
-		<pre class="sh_latex"><?php echo empty($tex_stream) ? $tex_stream_default : $tex_stream; ?></pre>
-	</div>
 </body>
 </html>
-

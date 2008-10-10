@@ -270,17 +270,15 @@
 	<title>TeX server</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<link type="text/css" rel="stylesheet" href="style.css">
+	<link type="text/css" rel="stylesheet" href="sh_style.css">
+	<script src="sh_main.min.js" type="text/javascript"></script>
+	<script src="sh_latex.js" type="text/javascript"></script>
+	<script src="codepress/codepress.js" type="text/javascript"></script>
 </head>
-<body>
-	<div id="warn">
-		This is a personal TeX server.
-		Use it for fun. <strong>Please don't hack</strong>.
-	</div>
-	<div class="clear__"></div>
+<body onload="sh_highlightDocument();">
 	<div id="rice">
 		<form method="post" action="index.php" id="form_tex_stream">
 			<textarea id="tex_stream" name="tex_stream" class="codepress latex linenumbers-on"><?php echo $tex_stream; ?></textarea>
-			<script src="codepress/codepress.js" type="text/javascript"></script>
 			<div id="captcha">
 				<span class="captcha_text"><?php print captcha('text'); ?></span>
 				<input name="captcha_answer" type="text">
@@ -292,6 +290,10 @@
 	</div>
 	<div id="log">
 		<?php print $typeset['output']; ?>
+	</div>
+	<div class="clear__"></div>
+	<div id="tex_color">
+		<pre class="sh_latex"><?php echo empty($tex_stream) ? $tex_stream_default : $tex_stream; ?></pre>
 	</div>
 </body>
 </html>

@@ -273,12 +273,11 @@
 	<link type="text/css" rel="stylesheet" href="sh_style.css">
 	<script src="sh_main.min.js" type="text/javascript"></script>
 	<script src="sh_latex.js" type="text/javascript"></script>
-	<script src="codepress/codepress.js" type="text/javascript"></script>
 </head>
 <body onload="sh_highlightDocument();">
 	<div id="rice">
 		<form method="post" action="index.php" id="form_tex_stream">
-			<textarea id="tex_stream" name="tex_stream" class="codepress latex linenumbers-on"><?php echo $tex_stream; ?></textarea>
+			<textarea id="tex_stream" name="tex_stream"><?php echo $tex_stream; ?></textarea>
 			<div id="captcha">
 				<span class="captcha_text"><?php print captcha('text'); ?></span>
 				<input name="captcha_answer" type="text">

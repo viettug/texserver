@@ -41,10 +41,10 @@
 
 	session_start();
 
-	error_reporting($_SERVER['REMOTE_ADDR'] == '192.168.1.9' ? E_ALL : 0);
-
 	define('USER', $_SERVER['REMOTE_ADDR']);
 	define('SUFFER', 4); /* minimum distance between two accesses */
+	define('IS_LOCAL', $_SERVER['REMOTE_ADDR'] == '192.168.1.9');
+	error_reporting(IS_LOCAL ? E_ALL : 0 );
 
 	/********************************************************* system variables */
 
@@ -142,6 +142,9 @@
 	/****************************************************************** captcha */
 
 	function captcha($op) {
+
+		if (IS_LOCAL) return TRUE;
+
 		global $captcha_newid, $captcha, $captcha_answer, $captcha_id;
 		$ret = '';
 		if ($op == 'id') {
@@ -283,7 +286,7 @@
 				<input name="captcha_answer" type="text">
 				<input name="captcha_id" value="<?php print captcha('id'); ?>" type="hidden">
 			</div>
-			<input type="submit" value="typeset" class="submit">
+			<input name="action" type="submit" value="typeset" class="submit">
 			<input type="reset" value="reset" class="reset">
 		</form>
 	</div>

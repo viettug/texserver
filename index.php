@@ -136,14 +136,14 @@
 		$_SESSION['access'] = $access;
 		$_SESSION['captcha_id_last'] = $captcha_id;
 
+		if (IS_LOCAL) $ret = TRUE;
+
 		return $ret;
 	}
 
 	/****************************************************************** captcha */
 
 	function captcha($op) {
-
-		if (IS_LOCAL) return TRUE;
 
 		global $captcha_newid, $captcha, $captcha_answer, $captcha_id;
 		$ret = '';
@@ -168,6 +168,7 @@
 			else {
 				$ret = FALSE;
 			}
+			if (IS_LOCAL) $ret = TRUE;
 		}
 		else {
 			$ret = NULL;

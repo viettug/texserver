@@ -2,4 +2,4 @@ RewriteEngine On
 Order deny,allow
 
 RewriteCond %{REQUEST_URI} tmp/.*\.log$
-RewriteRule tmp/.*\.log /access_denied.htm
+# RewriteRule tmp/.*\.log /access_denied.htm

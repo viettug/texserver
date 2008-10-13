@@ -120,6 +120,15 @@
 		return $tmpfname;
 	}
 
+	/************************************************************** hilight log */
+
+	function hilight_log($st) {
+		$st = explode("\\onenout1", $st);
+		$st = $st[1];
+		return $st;
+	}
+
+
 	/*************************************************** typeset the tex_stream */
 
 	function typeset() {
@@ -138,8 +147,12 @@
 		$option = implode(" ", $options);
 		exec(LATEX. " $option $texfile", $output, $retval);
 
+		$url = "http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."$jobdir_web/$jobname";
 		if ($retval == 0) {
-			$output = array("http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."$jobdir_web/$jobname.pdf");
+			$output = array("%src%\\curl --progress-bar $url.pdf > output.pdf ","%src%\\foxit output.pdf");
+		}
+		else {
+			$output = array("%src%\\curl --progress-bar $url.log > output.log ", "%src%\\u2d output.log", "notepad output.log");
 		}
 
 		$output = implode("\n", $output);

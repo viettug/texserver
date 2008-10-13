@@ -47,6 +47,8 @@
 	define('LATEX', '/usr/bin/latex');
 	error_reporting(IS_LOCAL ? E_ALL : 0 );
 
+	if (!IS_LOCAL) die('access deninied');
+
 	/********************************************************* system variables */
 
 	$tex_stream_default = '';

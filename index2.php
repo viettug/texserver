@@ -149,10 +149,10 @@
 
 		$url = "http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."$jobdir_web/$jobname";
 		if ($retval == 0) {
-			$output = array("%src%\\curl --progress-bar $url.pdf > output.pdf ","%src%\\foxit output.pdf");
+			$output = array("%src%\\curl -s $url.pdf > output.pdf ","%src%\\foxit output.pdf");
 		}
 		else {
-			$output = array("%src%\\curl --progress-bar $url.log > output.log ", "%src%\\u2d output.log", "notepad output.log");
+			$output = array("%src%\\curl -s $url.log > output.log ", "%src%\\u2d output.log", "notepad output.log");
 		}
 
 		$output = implode("\n", $output);

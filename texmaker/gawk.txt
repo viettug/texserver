@@ -1,0 +1,34 @@
+function getfile(filename)
+{    
+    while ( (getline < filename) > 0 ) {
+        where = match($0, /[^ \t]*\\input[\t ]*\{([^ ]+)\}/, arr)
+        if (where > 0) {
+            getfile(arr[1] ".tex")
+        }
+        else {
+            where = match($0, /[^ \t]*\\input[\t ]*([^ ]+)/, arr)
+            if (where > 0) {
+                getfile(arr[1] ".tex")
+            }
+            else {
+                print $0
+            }
+        }
+    }
+}
+
+{
+    where = match($0, /[^ \t]*\\input[\t \n]*{([^ ]+)}/, arr)            
+    if (where > 0) {
+        getfile(arr[1] ".tex")
+    }
+    else {
+        where = match($0, /[^ \t]*\\input[\t \n]*([^ ]+)/, arr) 
+        if (where > 0) {
+            getfile(arr[1] ".tex")
+        }
+        else {
+            print $0
+        }
+    }
+}

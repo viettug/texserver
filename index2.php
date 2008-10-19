@@ -47,7 +47,7 @@
 	define('LATEX', '/usr/bin/latex');
 	error_reporting(IS_LOCAL ? E_ALL : 0 );
 
-	if (!IS_LOCAL) die('access deninied');
+	// if (!IS_LOCAL) die('access deninied');
 
 	/********************************************************* system variables */
 
@@ -138,18 +138,21 @@
 		global $access, $last_access;
 
 		$texfile = make_tex_file();
-		$options = array(
+		$options1 = array(
 			"-no-shell-escape",
 			"-halt-on-error",
 			"-output-directory=$jobdir",
-			"-jobname=$jobname",
-			"-output-format=pdf"
+			"-jobname=$jobname"
 		);
+		$options = $options1;
+		$options []= "-output-format=pdf";
 
 		$option = implode(" ", $options);
+		$option1 = implode(" ", $options1);
+		exec(LATEX. " $option1 $texfile");
 		exec(LATEX. " $option $texfile", $output, $retval);
 
-		$url = "http://".$_SERVER['SERVER_ADDR'].":".$_SERVER['SERVER_PORT']."$jobdir_web/$jobname";
+		$url = "http://kyanh.zapto.org:1006$jobdir_web/$jobname";
 		if ($retval == 0) {
 			$output = array("%src%\\curl -s $url.pdf > output.pdf ","%src%\\foxit output.pdf");
 		}
